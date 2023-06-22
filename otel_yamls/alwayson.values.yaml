@@ -7,7 +7,7 @@ agent:
     exporters:
       splunk_hec:
         endpoint: https://ingest.$REALM.signalfx.com/v1/log
-        token: $ACCESS_TOKEN
+        token: ${SPLUNK_OBSERVABILITY_ACCESS_TOKEN}
       logging/info:
         loglevel: info
     service:
