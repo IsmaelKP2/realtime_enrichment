@@ -11,7 +11,6 @@ agent:
               type: collectd/kafka
               clusterName: sl-kafka
 clusterReceiver:
-  objectsEnabled: true
   k8sObjects:
     - name: events
       mode: watch
