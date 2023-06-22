@@ -10,17 +10,17 @@ agent:
         token: $ACCESS_TOKEN
       logging/info:
         loglevel: info
-  service:
-    pipelines:
-      logs/profiling:
-        exporters:
-          - logging/info
-          - splunk_hec
-        processors:
-          - memory_limiter
-          - batch
-        receivers:
-          - otlp
+    service:
+      pipelines:
+        logs/profiling:
+          exporters:
+            - logging/info
+            - splunk_hec
+          processors:
+            - memory_limiter
+            - batch
+          receivers:
+            - otlp
 splunkObservability:
   accessToken: $ACCESS_TOKEN
   realm: $REALM
