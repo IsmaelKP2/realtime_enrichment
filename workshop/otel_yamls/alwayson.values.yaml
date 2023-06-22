@@ -6,7 +6,7 @@ agent:
           grpc:
     exporters:
       splunk_hec:
-        endpoint: https://ingest.us1.signalfx.com/v1/log
+        endpoint: https://ingest.$REALM.signalfx.com/v1/log
         token: $ACCESS_TOKEN
       logging/info:
         loglevel: info
@@ -21,8 +21,6 @@ agent:
             - batch
           receivers:
             - otlp
-splunkAccessToken: $ACCESS_TOKEN
 splunkObservability:
   accessToken: $ACCESS_TOKEN
   realm: $REALM
-splunkRealm: $REALM
