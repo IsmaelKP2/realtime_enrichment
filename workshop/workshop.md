@@ -112,7 +112,12 @@ agent:
               type: collectd/kafka
               clusterName: sl-kafka
 clusterReceiver:
-  k8sObjects: true
+  objectsEnabled: true
+  k8sObjects:
+    - name: events
+      mode: watch
+      group: events.k8s.io
+      namespaces: [default]
   config:
     receivers:
       kafkametrics:
