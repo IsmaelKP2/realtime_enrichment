@@ -99,7 +99,7 @@ References:
 * [kafkametricsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/kafkametricsreceiver)
 
 ```
-otelAgent:
+agent:
   config:
     receivers:
       receiver_creator:
@@ -111,8 +111,8 @@ otelAgent:
               port: 5555
               type: collectd/kafka
               clusterName: sl-kafka
-otelK8sClusterReceiver:
-  k8sEventsEnabled: true
+clusterReceiver:
+  k8sObjects: true
   config:
     receivers:
       kafkametrics:
@@ -139,7 +139,7 @@ export SPLUNK_REALM=<your realm>
 export clusterName=sl-K3s
 helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
 helm repo update
-helm install --set provider=' ' --set distro=' ' --set splunkObservability.accessToken=$SPLUNK_ACCESS_TOKEN --set clusterName=$clusterName --set splunkObservability.realm=$SPLUNK_REALM --set otelCollector.enabled='false' --set splunkObservability.logsEnabled='true' --set gateway.enabled='false' --values kafka.values.yaml --values mongodb.values.yaml --values zookeeper.values.yaml --values alwayson.values.yaml --values k3slogs.yaml --generate-name splunk-otel-collector-chart/splunk-otel-collector 
+helm install --set cloudProvider=' ' --set distribution=' ' --set splunkObservability.accessToken=$ACCESS_TOKEN --set clusterName=$clusterName --set splunkObservability.realm=$REALM --set gateway.enabled='false' --set splunkObservability.logsEnabled='true' --set gateway.enabled='false' --values otel_yamls/kafka.values.yaml --values otel_yamls/mongodb.values.yaml --values otel_yamls/zookeeper.values.yaml --values otel_yamls/alwayson.values.yaml --values otel_yamls/k3slogs.yaml --generate-name splunk-otel-collector-chart/splunk-otel-collector 
 ```
 Verify that the Kafka, MongoDB and Splunk OTEL Collector helm charts are installed. Note that names may differ.
 ```

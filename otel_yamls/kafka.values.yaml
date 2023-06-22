@@ -1,4 +1,4 @@
-otelAgent:
+agent:
   config:
     receivers:
       receiver_creator:
@@ -11,7 +11,7 @@ otelAgent:
               type: collectd/kafka
               clusterName: sl-kafka
 clusterReceiver:
-  eventsEnabled: true
+  k8sObjects: true
   config:
     receivers:
       kafkametrics:
