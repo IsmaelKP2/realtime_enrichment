@@ -1,4 +1,4 @@
-otelAgent:
+agent:
   config:
     receivers:
       otlp:
@@ -21,8 +21,6 @@ otelAgent:
           - batch
         receivers:
           - otlp
-splunkAccessToken: $SPLUNK_ACCESS_TOKEN
 splunkObservability:
   accessToken: $SPLUNK_ACCESS_TOKEN
   realm: $SPLUNK_REALM
-splunkRealm: $SPLUNK_REALM

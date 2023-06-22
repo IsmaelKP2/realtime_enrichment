@@ -10,8 +10,8 @@ otelAgent:
               port: 5555
               type: collectd/kafka
               clusterName: sl-kafka
-otelK8sClusterReceiver:
-  k8sEventsEnabled: true
+clusterReceiver:
+  eventsEnabled: true
   config:
     receivers:
       kafkametrics:
