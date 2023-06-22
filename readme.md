@@ -79,7 +79,7 @@ helm install mongodb --set metrics.enabled=true bitnami/mongodb --set global.nam
 ```
 helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
 helm repo update
-helm install --set provider=' ' --set distribution=' ' --set splunkObservability.accessToken=$SPLUNK_ACCESS_TOKEN --set clusterName='sl-K3s' --set splunkObservability.realm=$SPLUNK_REALM --set otelCollector.enabled='false' --set splunkObservability.infrastructureMonitoringEventsEnabled='true' --set gateway.enabled='false' --values kafka.values.yaml --values mongodb.values.yaml --values zookeeper.values.yaml --values alwayson.values.yaml --values k3slogs.yaml --generate-name splunk-otel-collector-chart/splunk-otel-collector 
+helm install --set provider=' ' --set distribution=' ' --set splunkObservability.accessToken=$ACCESS_TOKEN --set clusterName='sl-K3s' --set splunkObservability.realm=$REALM --set otelCollector.enabled='false' --set splunkObservability.infrastructureMonitoringEventsEnabled='true' --set gateway.enabled='false' --values otel_yamls/kafka.values.yaml --values otel_yamls/mongodb.values.yaml --values otel_yamls/zookeeper.values.yaml --values otel_yamls/alwayson.values.yaml --values otel_yamls/k3slogs.yaml --generate-name splunk-otel-collector-chart/splunk-otel-collector 
 ```
 
 3) Verify that the Kafka, MongoDB and Splunk Otel Collector helm charts are installed. Note that names may differ.
