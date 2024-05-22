@@ -1,4 +1,6 @@
+id_ecdsa.pub
 # Project exclude paths
+/z_local_troubleshooting
 /target/
 /.gitignore.swp
 node_modules

@@ -27,7 +27,14 @@ Prerequisites
 
 - Splunk Observability Cloud Access Key
 - clone this repository
-- Download and extract the Yelp Data Set to /var/appdata such that the following files are available:
+
+- Download Yelp Dataset
+curl https://huggingface.co/datasets/happycute/yelp_dataset/resolve/c915a4a6440ccf0c1ac91baabb1f814979a78244/yelp_academic_dataset_business.json?download=true -o yelp_academic_dataset_business.json
+curl https://raw.githubusercontent.com/knowitall/yelp-dataset-challenge/master/data/yelp_phoenix_academic_dataset/yelp_academic_dataset_review.json -o yelp_academic_dataset_review.json
+curl https://github.com/knowitall/yelp-dataset-challenge/blob/master/data/yelp_phoenix_academic_dataset/yelp_academic_dataset_user.json -o yelp_academic_dataset_user.json
+
+- Move the Yelp Data Set to /var/appdata such that the following files are available:
+
 ```
 ll /var/appdata/yelp_academic_dataset_*
 -rw-r--r--@ 1 stevel  staff   124380583 Jan 28  2021 /var/appdata/yelp_academic_dataset_business.json
@@ -66,23 +73,56 @@ echo 'export KUBECONFIG=~/.kube/config' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+
+alternatively (worked on 22.04 ubunutu EC2 Machine)
+```
+export KUBECONFIG=~/.kube/config
+mkdir ~/.kube 2> /dev/null
+sudo k3s kubectl config view --raw > "$KUBECONFIG"
+sudo k3s kubectl config view --raw > ~/.kube/config
+chmod 600 "$KUBECONFIG"
+
+sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+
+echo 'export KUBECONFIG=~/.kube/config' >> ~/.bashrc
+source ~/.bashrc
+```
+
+
 ## Install and get metrics for K8, Kafka and MongoDB
 1) Install the Kafka and MongoDB with helm charts
 Note that for Kafka, replicaCount=3. This provides uw with 3 brokers. We're also enabling metrics for Kafka and Zookeeper. Finally, we're allowing topics to be deleted since this is a demo environment.
 Note that MongoDB is also configured with metrics enabled and a weak username and password since this is a demo environment.
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install kafka --set replicaCount=3 --set metrics.jmx.enabled=true --set metrics.kafka.enabled=true  --set zookeeper.metrics.enabled=true --set deleteTopicEnable=true bitnami/kafka
+helm install kafka --set replicaCount=3 --set metrics.jmx.enabled=true --set metrics.kafka.enabled=true  --set zookeeper.metrics.enabled=true --set deleteTopicEnable=true bitnami/kafka --version 17.2.3
 helm install mongodb --set metrics.enabled=true bitnami/mongodb --set global.namespaceOverride=default --set auth.rootUser=root --set auth.rootPassword=splunk --set auth.enabled=false --version 12.1.31
 ```
-2) Install the Splunk OTEL helm chart. In this example, the K8 cluster name is sl-K3s. Notice that values.yaml files are provided for Zookeeper, MongoDB and Kafka so metrics for these components will be captured. 
+
+2) Export the environment variable for the target O11y environmnent.
+
 ```
-helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
-helm repo update
-helm install --set cloudProvider=' ' --set distribution=' ' --set splunkObservability.accessToken=$ACCESS_TOKEN --set clusterName='sl-K3s' --set splunkObservability.realm=$REALM --set gateway.enabled='false' --set splunkObservability.infrastructureMonitoringEventsEnabled='true' --set gateway.enabled='false' --values otel_yamls/kafka.values.yaml --values otel_yamls/mongodb.values.yaml --values otel_yamls/zookeeper.values.yaml --values otel_yamls/alwayson.values.yaml --values otel_yamls/k3slogs.yaml --generate-name splunk-otel-collector-chart/splunk-otel-collector 
+export ACCESS_TOKEN="";export REALM=""
 ```
 
-3) Verify that the Kafka, MongoDB and Splunk Otel Collector helm charts are installed. Note that names may differ.
+3) Install the Splunk OTEL helm chart. In this example, the K8 cluster name is sl-K3s. Notice that values.yaml files are provided for Zookeeper, MongoDB and Kafka so metrics for these components will be captured. 
+
+```
+helm install \
+--set cloudProvider=' ' \
+--set distribution=' ' \
+--set splunkObservability.accessToken=$ACCESS_TOKEN \
+--set clusterName='sl-K3s' \
+--set splunkObservability.realm=$REALM \
+--set gateway.enabled='false' \
+--values otel_yamls/kafka.values.yaml \
+--values otel_yamls/mongodb.values.yaml \
+--values otel_yamls/zookeeper.values.yaml \
+--values otel_yamls/alwayson.values.yaml \
+--generate-name splunk-otel-collector-chart/splunk-otel-collector 
+```
+
+4) Verify that the Kafka, MongoDB and Splunk Otel Collector helm charts are installed. Note that names may differ.
 ```
 ubuntu@test4cpu8gb:~/otel$ helm list
 NAME                            	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART                       	APP VERSION
@@ -177,6 +217,16 @@ kubectl run --namespace default mongodb-client --rm --tty -i --restart='Never' -
 mongo admin --host "mongodb"
 use O11y
 db.O11yCollection.drop()
+exit
+exit
+```
+
+To list the collections 
+```
+kubectl run --namespace default mongodb-client --rm --tty -i --restart='Never' --env="MONGODB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD" --image docker.io/bitnami/mongodb:4.4.10-debian-10-r44 --command -- bash
+mongo admin --host "mongodb"
+use O11y
+db.runCommand({listCollections: 1})
 exit
 exit
 ```
