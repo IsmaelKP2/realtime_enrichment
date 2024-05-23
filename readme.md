@@ -29,10 +29,11 @@ Prerequisites
 - clone this repository
 
 - Download Yelp Dataset
+```
 curl https://huggingface.co/datasets/happycute/yelp_dataset/resolve/c915a4a6440ccf0c1ac91baabb1f814979a78244/yelp_academic_dataset_business.json?download=true -o yelp_academic_dataset_business.json
 curl https://raw.githubusercontent.com/knowitall/yelp-dataset-challenge/master/data/yelp_phoenix_academic_dataset/yelp_academic_dataset_review.json -o yelp_academic_dataset_review.json
 curl https://github.com/knowitall/yelp-dataset-challenge/blob/master/data/yelp_phoenix_academic_dataset/yelp_academic_dataset_user.json -o yelp_academic_dataset_user.json
-
+```
 - Move the Yelp Data Set to /var/appdata such that the following files are available:
 
 ```
